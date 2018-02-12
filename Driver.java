@@ -55,6 +55,8 @@ public class Driver{
                     move(hero, mvmnt, map);
                 }
             }
+            updateNumBossesKilled(hero, setup);
+            removeDeadBosses(setup, map);
             if(hero.getMapReceived() == false){
                 printMap(map, setup, hero);
             }else{
@@ -64,6 +66,50 @@ public class Driver{
         }
         if((hero.getHealth() <= 0) && (hero.getBossesKilled() != 4)){
             System.out.println("You have failed to kill all the monsters.");
+        }else{
+            System.out.println("You have killed all the monsters!");
+        }
+    }
+    
+    public static void removeDeadBosses(Object[] setup, Object[][] map){
+        BossMonster currBoss;
+        for(int i = 0; i < map.length; i++){
+            for(int j = 0; j < map[i].length; j++){
+                if(map[i][j] == setup[6]){
+                    currBoss = (BossMonster)map[i][j];
+                    if(currBoss.getHealth() <= 0){
+                        map[i][j] = null;
+                    }
+                }else if(map[i][j] == setup[7]){
+                    currBoss = (BossMonster)map[i][j];
+                    if(currBoss.getHealth() <= 0){
+                        map[i][j] = null;
+                    }
+                }else if(map[i][j] == setup[8]){
+                    currBoss = (BossMonster)map[i][j];
+                    if(currBoss.getHealth() <= 0){
+                        map[i][j] = null;
+                    }
+                }else if(map[i][j] == setup[9]){
+                    currBoss = (BossMonster)map[i][j];
+                    if(currBoss.getHealth() <= 0){
+                        map[i][j] = null;
+                    }
+                }
+            }
+        }
+    }
+    
+    public static void updateNumBossesKilled(Hero hero, Object[] setup){
+        BossMonster currBoss;
+        for(int i = 6; i < setup.length; i++){
+            if(setup[i]!= null){
+                currBoss = (BossMonster)setup[i];
+                if((currBoss.getHealth() <= 0) && (currBoss.getHealth() != -100)){
+                    hero.addBossKilled();
+                    currBoss.setHealth(-100);
+                }
+            }
         }
     }
     
@@ -90,7 +136,7 @@ public class Driver{
                 }else if((hero.getRow() - i == 0) && ((hero.getCol() - j == -1)) && (hero.getCol() < 14) && (((map[hero.getRow()][hero.getCol() + 1] == (setup[0]))) || (map[hero.getRow()][hero.getCol() + 1] == (setup[1])) || (map[hero.getRow()][hero.getCol() + 1] == (setup[2])) || (map[hero.getRow()][hero.getCol() + 1] == (setup[3])) || (map[hero.getRow()][hero.getCol() + 1] == (setup[4])) || (map[hero.getRow()][hero.getCol() + 1] == (setup[5])))){
                     System.out.print("F\t");
                 }else if((map[i][j] != null) && ((map[i][j] == setup[6]) || (map[i][j] == setup[7]) || (map[i][j] == setup[8]) || (map[i][j] == setup[9]))){
-                    System.out.print("B" + (hero.getBossesKilled() + 1) + "\t");
+                    System.out.print("B" + Integer.toString((hero.getBossesKilled() + 1)) + "\t");
                 }else{
                     System.out.print(".\t");
                 }
@@ -107,7 +153,7 @@ public class Driver{
                 }else if((map[i][j] == setup[0]) || (map[i][j] == setup[1]) || (map[i][j] == setup[2]) || (map[i][j] == setup[3]) || (map[i][j] == setup[4]) || (map[i][j] == setup[5])){
                     System.out.print("F\t");
                 }else if(map[i][j] != null){
-                    System.out.print("B\t");
+                    System.out.print("B" + Integer.toString((hero.getBossesKilled() + 1)) + "\t");
                 }else{
                     System.out.print(".\t");
                 }
@@ -123,7 +169,7 @@ public class Driver{
         Weapon weapon = hero.getWeapon();
         int numPotions = 0;
         
-        System.out.println("Health: " + health + "\tWeapon: " + weapon + "\tCurrency: $" + numHides + "\tArmor: " + hero.hasArmor() + "\tBombs: " + hero.getNumBombs());
+        System.out.println("Health: " + health + "\tWeapon: " + weapon.getType() + "\tCurrency: $" + numHides + "\tArmor: " + hero.hasArmor() + "\tBombs: " + hero.getNumBombs());
         System.out.println("Half Potions: " + hero.getNumHalfPotions() + "\t\tFull Potions: " + hero.getNumFullPotions() + "\t\tPhoenix Potions: " + hero.getNumPhoenixPotions());
     } 
     
@@ -336,7 +382,7 @@ public class Driver{
     }
     
     public static void createBoss(int bossesKilled, Object[][] map, Hero hero, Object[] setup){
-        int bossNum = bossesKilled + 1;
+        int bossNum = hero.getBossesKilled() + 1;
         BossMonster boss = new BossMonster(0,0,0,0,0,0, 0);
         int row = (int)(Math.random() * 14);
         int col = (int)(Math.random() * 14);
@@ -352,7 +398,7 @@ public class Driver{
         
         if(bossNum == 1){
             attack =  hero.getWeapon().getAverageStrength() - 5;
-            if((hero.getInventoryLength() != 6) || (hero.getNumFullPotions() < 6)){
+            if((hero.getInventoryLength() != 6) || (hero.getNumFullPotions() != 6)){
                 attack = 100;
             }
             boss = new BossMonster(row, col, 0, attack, health, direc, bossNum);
@@ -448,11 +494,6 @@ public class Driver{
             System.out.println("You have encountered a small monster!");
         }else if(object.getInital().equals("B")){
             System.out.println("You have encountered the Boss!");
-            if(boss.getBossNum() == 1){
-                if((hero.getInventoryLength() != 6) && (hero.getNumFullPotions() != 6)){
-                    object.setAttack(50);
-                }
-            }
         }  
         
         while((monster.getHealth() > 0) && (hero.getHealth() > 0)){

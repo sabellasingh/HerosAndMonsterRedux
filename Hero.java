@@ -27,12 +27,13 @@ public class Hero implements Character{
         initial = "H";
         armor = false;
         inventoryLength = 2;
-        numHalfPotions = 1;
+        numHalfPotions = 0;
         numfullPotions = 1;
         numPhoenixPotions = 0;
         numBombs = 0;
         bossesKilled = 0;
         sandals = false;
+        currency = 0;
     }
     
     public void putSandalsOn(){
