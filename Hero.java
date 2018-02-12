@@ -33,7 +33,7 @@ public class Hero implements Character{
         numBombs = 0;
         bossesKilled = 0;
         sandals = false;
-        currency = 0;
+        currency = 1000;
     }
     
     public void putSandalsOn(){

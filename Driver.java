@@ -565,7 +565,7 @@ public class Driver{
                 }
             }else if(choice.equals("attack")){
                 for(int i = 0; i < numAttacks; i++){
-                    if(monster.getSpeed() == 2 ||   monster.getSpeed() == 3){
+                    if(monster.getSpeed() == 3 && hero.getSandalsOn() == true){
                         System.out.println("Hero attack missed!");
                     }else{
                         hero.useArmor(monster);
