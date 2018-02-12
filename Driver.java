@@ -36,7 +36,7 @@ public class Driver{
         }
         printMap(map, setup, hero);
         printInventory(hero);
-        while(hero.getBossesKilled() != 4 && hero.getHealth() > 0){
+        while((hero.getBossesKilled() != 4) && ((hero.getHealth() > 0) || (hero.getNumPhoenixPotions() > 0))){
             userIn = new Scanner(System.in);
             System.out.println("Enter direction: ");
             input = userIn.nextLine();
@@ -54,6 +54,10 @@ public class Driver{
                 if(mvmnt.equals("z") == false){
                     move(hero, mvmnt, map);
                 }
+            }
+            if(hero.getHealth() <= 0 && hero.getNumPhoenixPotions() > 0){
+                hero.setHealth(100);
+                hero.setNumPhoenixPotions(hero.getNumPhoenixPotions() - 1);
             }
             updateNumBossesKilled(hero, setup);
             removeDeadBosses(setup, map);
@@ -75,25 +79,27 @@ public class Driver{
         BossMonster currBoss;
         for(int i = 0; i < map.length; i++){
             for(int j = 0; j < map[i].length; j++){
-                if(map[i][j] == setup[6]){
-                    currBoss = (BossMonster)map[i][j];
-                    if(currBoss.getHealth() <= 0){
-                        map[i][j] = null;
-                    }
-                }else if(map[i][j] == setup[7]){
-                    currBoss = (BossMonster)map[i][j];
-                    if(currBoss.getHealth() <= 0){
-                        map[i][j] = null;
-                    }
-                }else if(map[i][j] == setup[8]){
-                    currBoss = (BossMonster)map[i][j];
-                    if(currBoss.getHealth() <= 0){
-                        map[i][j] = null;
-                    }
-                }else if(map[i][j] == setup[9]){
-                    currBoss = (BossMonster)map[i][j];
-                    if(currBoss.getHealth() <= 0){
-                        map[i][j] = null;
+                if(map[i][j] != null){
+                        if(map[i][j] == setup[6]){
+                        currBoss = (BossMonster)map[i][j];
+                        if(currBoss.getHealth() <= 0){
+                            map[i][j] = null;
+                        }
+                    }else if(map[i][j] == setup[7]){
+                        currBoss = (BossMonster)map[i][j];
+                        if(currBoss.getHealth() <= 0){
+                            map[i][j] = null;
+                        }
+                    }else if(map[i][j] == setup[8]){
+                        currBoss = (BossMonster)map[i][j];
+                        if(currBoss.getHealth() <= 0){
+                            map[i][j] = null;
+                        }
+                    }else if(map[i][j] == setup[9]){
+                        currBoss = (BossMonster)map[i][j];
+                        if(currBoss.getHealth() <= 0){
+                            map[i][j] = null;
+                        }
                     }
                 }
             }
@@ -476,6 +482,7 @@ public class Driver{
         BossMonster boss = null;
         int numAttacks = 1;
         int currAttack;
+        int bossNum;
         
         
         if(hero.getSandalsOn() == true){
@@ -602,12 +609,12 @@ public class Driver{
                 hero.setCurrency(hero.getCurrency() + 10);
             }else if(monster.getInital().equals("B")){
                 hero.setCurrency(hero.getCurrency() + 30);
-                if(boss.getBossNum() == 1){
+                if(hero.getBossesKilled() == 0){
                     hero.setWeapon("short sword", 20, 40);
-                }else if(boss.getBossNum() == 2){
+                }else if(hero.getBossesKilled() == 1){
                     hero.setWeapon("long sword", 30, 50);
                     hero.setNumPhoenixPotions(1);
-                }else if(boss.getBossNum() == 3){
+                }else if(hero.getBossesKilled() == 2){
                     hero.setWeapon("battle axe", 40, 60);
                     hero.setNumPhoenixPotions(hero.getNumPhoenixPotions() + 2);
                 }
